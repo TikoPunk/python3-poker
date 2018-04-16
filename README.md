@@ -2,6 +2,6 @@
 
 ### to run ###
 
-git clone https://github.com/tiko23867/python3-poker.git
-cd python3-poker
+git clone https://github.com/tiko23867/python3-poker.git  <br />
+cd python3-poker  <br />
 python3 main.py
