@@ -8,7 +8,7 @@ from card import Card
 def countPlayers(players):
     i = 0
     for p in players:
-        if p.getIn() is True:
+        if p.In:
             i += 1
 
     return i
@@ -46,7 +46,7 @@ def IsOut(players):
     returnList = []
 
     for p in players:
-        if p.getIn() is not False:
+        if p.In:
             returnList.append(p)
 
     return returnList
@@ -85,18 +85,18 @@ print("\nTexas Hold em\n\n")
 
 players = []
 
-startingMoney = 20000
+starting_money = 20000
 
 for i in range(int(input("How many players?:"))):
-    players.append(Player(input("What is your name?:"), startingMoney))
-    print("Welcome", players[i].getName(), "\n")
+    players.append(Player(input("What is your name?:"), starting_money))
+    print("Welcome", players[i].name, "\n")
 
-bigBlind = 400
-smallBlind = int(bigBlind / 2)
+big_blind = 400
+small_blind = big_blind // 2
 
 # Main Game
-print("Players are starting off at", startingMoney)
-print("With", bigBlind, "big blinds and", smallBlind, "small blinds")
+print("Players are starting off at", starting_money)
+print("With", big_blind, "big blinds and", small_blind, "small blinds")
 
 turn = 0
 
@@ -104,16 +104,16 @@ num = ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"]
 suit = ["Spades", "Hearts", "Clubs", "Diamonds"]
 
 # Create the deck
-deckBackup = []
+deck_backup = []
 
 i = 0
-while (len(deckBackup) < 52):
+while (len(deck_backup) < 52):
     for n in num:
-        deckBackup.append(Card(n, suit[i]))
+        deck_backup.append(Card(n, suit[i]))
 
     i += 1
 
-deck = shuffle(deckBackup)
+deck = shuffle(deck_backup)
 
 tab = Table()
 
@@ -139,36 +139,38 @@ while(len(players) > 1):
         print("\nRiver\n\n")
         cards, deck = getCard(deck, 1)
 
-    tab.setCards(cards)
+    # tab.setCards(cards)
+    tab.cards.extend(cards)
 
     for p in players:
         # Skip is player is out
-        if p.getIn() is False:
+        if p.In is False:
             continue
 
         # Check if the last player
         if (countPlayers(players) is 1):
-            print("\n\n", p.getName(), "Won the pot\n\n")
+            print("\n\n", p.name, "Won the pot\n\n")
             turn = 2
             break
 
         if turn == 0:
             cards, deck = getCard(deck, 2)
-            p.setCards(cards)
+            p.cards.extend(cards)
 
         tab.getCards()
         p.getCards()
-        print("tableBet is", tab.getBet(), "\n\n")
-        print(p.getName(), "'s turn\n", sep='')
+        print("tableBet is", tab.bet, "\n\n")
+        print(p.name, "'s turn\n", sep='')
         # This is where they decide to fold, bet or match
-        decision = makebet(tab.getBet(), p.getBet())
+        decision = makebet(tab.bet, p.bet)
         if decision == "f":
-            p.setIn(False)
+            p.In = False
+            p.bet = "Is Out"
 
         else:
-            tab.setBet(decision)
-            p.setBet(tab.getBet())
-        print(p.getName(), "'s bet is ", p.getBet(), sep='')
+            tab.bet = decision
+            p.bet = tab.bet
+        print(p.name, "'s bet is ", p.bet, sep='')
 
     turn += 1
 
@@ -177,5 +179,5 @@ while(len(players) > 1):
         input("Press Enter to continue...")
         turn = 0
         for p in players:
-            p.setIntoTrue()
-        deck = shuffle(deckBackup)
+            p.In = True
+        deck = shuffle(deck_backup)
