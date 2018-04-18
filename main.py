@@ -1,8 +1,8 @@
 import sys
 import random
-from table import Table
-from player import Player
-from card import Card
+from classes import Table
+from classes import Player
+from classes import Card
 
 
 def clear_screen():
@@ -11,24 +11,24 @@ def clear_screen():
 
 def make_bet(bet, playerBet):
     if bet == playerBet:
-        newBet = input("Bet?: \nCheck(c) Fold(f), or number for bet: ")
+        new_bet = input("Bet?: \nCheck(c) Fold(f), or number for bet: ")
 
     else:
-        newBet = input("Bet?: \nMatch(m), Fold(f), or number for bet: ")
+        new_bet = input("Bet?: \nMatch(m), Fold(f), or number for bet: ")
 
-    if newBet == "q":
+    if new_bet == "q":
         sys.exit("Bye")
 
-    if newBet == "f":
+    if new_bet == "f":
         return "f"
 
-    if newBet.isnumeric():
-        newBet = int(newBet)
-        if newBet < bet:
+    if new_bet.isnumeric():
+        new_bet = int(new_bet)
+        if new_bet < bet:
             print("Whoa, either fold or match")
             make_bet(bet, playerBet)
-        if newBet is not bet:
-            return newBet
+        if new_bet is not bet:
+            return new_bet
 
     return bet
 
@@ -95,7 +95,6 @@ while (len(deck_backup) < 52):
     i += 1
 
 deck = shuffle(deck_backup)
-
 tab = Table()
 
 
