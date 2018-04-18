@@ -8,7 +8,7 @@ class Player(object):
         self.dead = False
         self.cards = []
 
-    def getCards(self):
+    def get_cards(self):
         print("\n", self.name, "has", len(self.cards), "cards\n")
         for c in self.cards:
             print(c.number, c.suit)

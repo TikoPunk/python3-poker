@@ -3,7 +3,7 @@ class Table(object):
         self.bet = 0
         self.cards = []
 
-    def getCards(self):
+    def get_cards(self):
         print("\nTable has")
         if (len(self.cards) <= 0):
             print("No Cards")

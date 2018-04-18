@@ -5,20 +5,11 @@ from player import Player
 from card import Card
 
 
-def countPlayers(players):
-    i = 0
-    for p in players:
-        if p.In:
-            i += 1
-
-    return i
-
-
-def clearScreen():
+def clear_screen():
     print(chr(27) + "[2J")
 
 
-def makebet(bet, playerBet):
+def make_bet(bet, playerBet):
     if bet == playerBet:
         newBet = input("Bet?: \nCheck(c) Fold(f), or number for bet: ")
 
@@ -35,49 +26,39 @@ def makebet(bet, playerBet):
         newBet = int(newBet)
         if newBet < bet:
             print("Whoa, either fold or match")
-            makebet(bet, playerBet)
+            make_bet(bet, playerBet)
         if newBet is not bet:
             return newBet
 
     return bet
 
 
-def IsOut(players):
-    returnList = []
-
-    for p in players:
-        if p.In:
-            returnList.append(p)
-
-    return returnList
-
-
 def shuffle(deck):
-    newDeck = []
+    new_deck = []
     counter = []
     for i in range(52):
         counter.append(i)
 
-    while len(newDeck) != 52:
-        randomInt = random.randint(0, 51)
+    while len(new_deck) != 52:
+        random_int = random.randint(0, 51)
 
-        if counter[randomInt] is not False:
-            newDeck.append(deck[randomInt])
-            counter[randomInt] = False
+        if counter[random_int] is not False:
+            new_deck.append(deck[random_int])
+            counter[random_int] = False
 
-    return newDeck
+    return new_deck
 
 
-def getCard(deck, num):
+def get_card(deck, num):
 
     cards = []
-    newDeck = deck
+    new_deck = deck
 
     for i in range(num):
-        cards.append(newDeck[-1])
-        newDeck.pop()
+        cards.append(new_deck[-1])
+        new_deck.pop()
 
-    return cards, newDeck
+    return cards, new_deck
 
 
 # Main start
@@ -119,7 +100,7 @@ tab = Table()
 
 
 while(len(players) > 1):
-    clearScreen()
+    clear_screen()
     print("\nGame Start\n")
 
     cards = []
@@ -127,17 +108,17 @@ while(len(players) > 1):
     # Flop
     if turn is 1:
         print("\nFlop\n\n")
-        cards, deck = getCard(deck, 3)
+        cards, deck = get_card(deck, 3)
 
     # Turn
     elif turn is 2:
         print("\nTurn\n\n")
-        cards, deck = getCard(deck, 1)
+        cards, deck = get_card(deck, 1)
 
     # River
     elif turn is 3:
         print("\nRiver\n\n")
-        cards, deck = getCard(deck, 1)
+        cards, deck = get_card(deck, 1)
 
     # tab.setCards(cards)
     tab.cards.extend(cards)
@@ -147,22 +128,21 @@ while(len(players) > 1):
         if p.In is False:
             continue
 
-        # Check if the last player
-        if (countPlayers(players) is 1):
+        if len([p for p in players if p.In]) is 1:
             print("\n\n", p.name, "Won the pot\n\n")
-            turn = 2
+            turn = 3
             break
 
         if turn == 0:
-            cards, deck = getCard(deck, 2)
+            cards, deck = get_card(deck, 2)
             p.cards.extend(cards)
 
-        tab.getCards()
-        p.getCards()
-        print("tableBet is", tab.bet, "\n\n")
+        tab.get_cards()
+        p.get_cards()
+        print("Table bet is", tab.bet, "\n\n")
         print(p.name, "'s turn\n", sep='')
         # This is where they decide to fold, bet or match
-        decision = makebet(tab.bet, p.bet)
+        decision = make_bet(tab.bet, p.bet)
         if decision == "f":
             p.In = False
             p.bet = "Is Out"
@@ -174,7 +154,7 @@ while(len(players) > 1):
 
     turn += 1
 
-    if turn == 3:
+    if turn == 4:
         print("\n\nShow hands\n\n")
         input("Press Enter to continue...")
         turn = 0
