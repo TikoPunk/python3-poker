@@ -3,6 +3,7 @@ from classes import Table
 from classes import Player
 from treys import Deck
 from treys import Evaluator
+from collections import OrderedDict
 
 
 def clear_screen():
@@ -31,6 +32,28 @@ def make_bet(bet, playerBet):
             return new_bet
 
     return bet
+
+
+def bubbleSort(d):
+
+    kL = []
+    vL = []
+
+    for key, val in sorted(d.items()):
+        kL.append(key)
+        vL.append(val)
+
+    for i in range(len(d)):
+        for index, (key, val) in enumerate(zip(kL, vL)):
+            try:
+                if val < vL[index + 1]:
+                    vL[index], vL[index + 1] = vL[index + 1], vL[index]
+                    kL[index], kL[index + 1] = kL[index + 1], kL[index]
+            except IndexError:
+                break
+
+    return kL, vL
+
 
 
 # Main start
@@ -93,7 +116,9 @@ while(len(players) > 1):
 
         tab.print_cards()
         p.print_cards()
-        print("Table bet is", tab.bet, "\n\n")
+        print("Table bet is", tab.bet, "\n")
+        print("Table money is", tab.money, "\n\n")
+
         print(p.name, "'s turn\n", sep='')
 
         # This is where they decide to fold, bet or match
@@ -104,8 +129,14 @@ while(len(players) > 1):
 
         else:
             tab.bet = decision
+            tab.money += tab.bet
+            # if tab.bet > p.bet:
+            p.money -= tab.bet
+
             p.bet = tab.bet
+
         print(p.name, "'s bet is ", p.bet, sep='')
+        print(p.name, "has", p.money)
 
     turn += 1
 
@@ -113,14 +144,22 @@ while(len(players) > 1):
         print("\n\nShow hands\n\n")
         evaluator = Evaluator()
 
-        p1_score = evaluator.evaluate(tab.cards, players[0].cards)
-        p2_score = evaluator.evaluate(tab.cards, players[1].cards)
+        scores = {}
 
-        if p1_score < p2_score:
-            print("Player 1 wins!\n")
+        for p in players:
+            # scores.append([evaluator.evaluate(tab.cards, p.cards), p])
+            scores[evaluator.evaluate(tab.cards, p.cards)] = p.name
 
-        else:
-            print("Player 2 wins!\n")
+        d = OrderedDict(sorted(scores.items(), key=lambda t: t[0]))
+        items = list(d.items())
+        for p in players:
+            if p.name is items[0][1]:
+                print(p.name, "Gets", tab.money)
+                print(p.money, "now")
+                p.money += tab.money
+                print(p.money)
+                break
+
         input("Press Enter to continue...")
 
         # Set everything back to nothing
@@ -130,3 +169,5 @@ while(len(players) > 1):
             p.cards = []
         deck.shuffle()
         tab.cards = []
+        tab.bet = 0
+        tab.money = 0

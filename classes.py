@@ -19,6 +19,7 @@ class Table(object):
     def __init__(self):
         self.bet = 0
         self.cards = []
+        self.money = 0
 
     def print_cards(self):
         print("\nTable has")
