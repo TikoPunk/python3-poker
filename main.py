@@ -1,8 +1,8 @@
 import sys
 from classes import Table
 from classes import Player
-from classes import Card
-from classes import Deck
+from treys import Deck
+from treys import Evaluator
 
 
 def clear_screen():
@@ -53,20 +53,7 @@ print("With", big_blind, "big blinds and", small_blind, "small blinds")
 
 turn = 0
 
-num = ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"]
-suit = ["Spades", "Hearts", "Clubs", "Diamonds"]
-
-# Create the deck
-cards = []
-
-i = 0
-while (len(cards) < 52):
-    for n in num:
-        cards.append(Card(n, suit[i]))
-
-    i += 1
-
-deck = Deck(cards)
+deck = Deck()
 deck.shuffle()
 tab = Table()
 
@@ -75,24 +62,21 @@ while(len(players) > 1):
     clear_screen()
     print("\nGame Start\n")
 
-    cards = []
-
     # Flop
     if turn is 1:
         print("\nFlop\n\n")
-        cards = deck.get_cards(3)
+        cards = deck.draw(3)
+        tab.cards.extend(deck.draw(3))
 
     # Turn
     elif turn is 2:
         print("\nTurn\n\n")
-        cards = deck.get_cards(1)
+        tab.cards.append(deck.draw(1))
 
     # River
     elif turn is 3:
         print("\nRiver\n\n")
-        cards = deck.get_cards(1)
-
-    tab.cards.extend(cards)
+        tab.cards.append(deck.draw(1))
 
     for p in players:
         # Skip is player is out
@@ -105,8 +89,7 @@ while(len(players) > 1):
             break
 
         if turn == 0:
-            cards = deck.get_cards(2)
-            p.cards.extend(cards)
+            p.cards.extend(deck.draw(2))
 
         tab.print_cards()
         p.print_cards()
@@ -128,6 +111,16 @@ while(len(players) > 1):
 
     if turn == 4:
         print("\n\nShow hands\n\n")
+        evaluator = Evaluator()
+
+        p1_score = evaluator.evaluate(tab.cards, players[0].cards)
+        p2_score = evaluator.evaluate(tab.cards, players[1].cards)
+
+        if p1_score < p2_score:
+            print("Player 1 wins!\n")
+
+        else:
+            print("Player 2 wins!\n")
         input("Press Enter to continue...")
 
         # Set everything back to nothing
