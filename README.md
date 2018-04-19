@@ -7,7 +7,7 @@ cd python3-poker  <br />
 python3 main.py
 
 ###TO DO
- - Compare hands
+ - ~~Compare hands~~
  - Add bet to winning player
  - GUI
  
