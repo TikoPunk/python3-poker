@@ -4,6 +4,7 @@
 
 git clone https://github.com/tiko23867/python3-poker.git  <br />
 cd python3-poker  <br />
+pip install -r requirements.txt
 python3 main.py
 
 ###TO DO
