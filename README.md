@@ -11,5 +11,6 @@ Only two players right now
 
 ###TO DO
  - ~~Compare hands~~
+ - ~~Add bet to winning player~~
  - Add bet to winning player
  - GUI
