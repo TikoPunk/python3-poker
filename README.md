@@ -9,4 +9,5 @@ python3 main.py
 ###TO DO
  - ~~Compare hands~~
  - ~~Add bet to winning player~~
+ - Get rid of players who have no money left
  - GUI
