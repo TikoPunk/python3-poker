@@ -11,19 +11,25 @@ def clear_screen():
 
 
 def make_bet(bet, playerBet):
-    if bet == playerBet:
-        new_bet = input("Bet?: \nCheck(c) Fold(f), or number for bet: ")
+    if bet == playerBet or playerBet is 0:
+        new_bet = input(
+            "Bet?: \nCheck(c), Fold(f), All In(a), or number for bet: ")
 
     else:
-        new_bet = input("Bet?: \nMatch(m), Fold(f), or number for bet: ")
+        new_bet = input(
+            "Bet?: \nMatch(m), Fold(f), All In(a), or number for bet: ")
 
-    if new_bet == "q":
+    if new_bet is "q":
         sys.exit("Bye")
 
-    if new_bet == "f":
+    elif new_bet is "f":
         return "f"
 
-    if new_bet.isnumeric():
+    elif new_bet is "a":
+        print("WOW, all in", p.money)
+        bet = p.money
+
+    elif new_bet.isnumeric():
         new_bet = int(new_bet)
         if new_bet < bet:
             print("Whoa, either fold or match")
@@ -122,15 +128,20 @@ while(len(players) > 1):
         print(p.name, "'s turn\n", sep='')
 
         # This is where they decide to fold, bet or match
-        decision = make_bet(tab.bet, p.bet)
-        if decision == "f":
+        if p.money > 0:
+            decision = make_bet(tab.bet, p.bet)
+
+        else:
+            print("Skipping", p.name, "\n")
+            continue
+
+        if decision is "f":
             p.In = False
             p.bet = "Is Out"
 
         else:
             tab.bet = decision
             tab.money += tab.bet
-            # if tab.bet > p.bet:
             p.money -= tab.bet
 
             p.bet = tab.bet
@@ -157,17 +168,27 @@ while(len(players) > 1):
                 print(p.name, "Gets", tab.money)
                 print(p.money, "now")
                 p.money += tab.money
-                print(p.money)
+                print(p.money, "Adding pot")
                 break
 
         input("Press Enter to continue...")
 
+        # Get rid of players with no no money
         # Set everything back to nothing
         turn = 0
+        player_back = []
         for p in players:
             p.In = True
             p.cards = []
+            if p.money > 0:
+                player_back.append(p)
+            else:
+                print(p.name, "Good bye\n")
+
         deck.shuffle()
         tab.cards = []
         tab.bet = 0
         tab.money = 0
+        players = player_back
+
+print("\n\n", players[0].name, " Wins everything\n\n", sep='')
