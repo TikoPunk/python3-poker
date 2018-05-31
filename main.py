@@ -81,8 +81,99 @@ def bet(player, player_bet, highBet):
     return player_bet, highBet
 
 
+def game(players):
+    tab = Table()
 
-# Main start
+    turn = 0
+    highBet = 0
+    player_bet = 0
+    deck = Deck()
+    deck.shuffle()
+
+    while turn < 4:
+        print("Turn is", turn, "\n")
+        players, tab, deck = action(turn, players, tab, deck)
+
+        tab.print_cards()
+        print("Table has", tab.pot)
+        turn += 1
+        out = False
+
+        while (True):
+            for p in players:
+                # check if betting needs to be continued
+                if p.bet == highBet:
+                    highBet = 0
+
+                    for p in players:
+                        p.bet = None
+
+                    out = True
+                    break
+
+                print("\n{}'s turn\n".format(p.name))
+                p.print_cards()
+
+                player_bet, highBet = bet(p, player_bet, highBet)
+
+                try:
+                    p.money = p.money - (player_bet - p.bet)
+                    tab.pot = tab.pot + (player_bet - p.bet)
+                except TypeError:
+                    p.money = p.money - player_bet
+                    tab.pot = tab.pot + player_bet
+
+                p.bet = player_bet
+
+                print(Fore.BLUE, "Player", p.name, "has", p.money)
+
+                print(Fore.RED + "\n{}'s bet is {}.".format(p.name, p.bet))
+                print(Style.RESET_ALL)
+
+            if out is True:
+                break
+
+    print("Show hands")
+    evaluator = Evaluator()
+
+    scores = {}
+
+    tab.print_cards()
+    print()
+
+    for p in players:
+        p.print_cards()
+        print()
+        scores[evaluator.evaluate(tab.cards, p.cards)] = p
+
+    d = OrderedDict(sorted(scores.items(), key=lambda t: t[0]))
+    items = list(d.items())
+    for i in items:
+        print(i[0], i[1].name)
+        p_score = i[0]
+        p_class = evaluator.get_rank_class(p_score)
+        print(evaluator.class_to_string(p_class))
+
+    # See who won
+    # If tie, pot is split
+    print('\n')
+
+    winner = [x for x in items if x[0] == items[0][0]]
+    print("Winners", winner)
+
+    winings = tab.pot // len(winner)
+
+    for p in winner:
+        print(p[1].name, "won! and got", winings)
+        p[1].money += winings
+
+    for p in players:
+        print(p.name, "has", p.money)
+
+    return [x for x in players if x.money > 0]
+
+
+    # Main start
 print("\nTexas Hold em\n\n")
 
 players = []
@@ -102,78 +193,12 @@ small_blind = big_blind // 2
 print("Players are starting off at", starting_money)
 print("With", big_blind, "big blinds and", small_blind, "small blinds")
 
-tab = Table()
-
-
 colorama.init()
 
 
 print("\nGame Start\n")
 
-turn = 0
-highBet = 0
-player_bet = 0
-deck = Deck()
-deck.shuffle()
+while len(players) > 1:
+    players = game(players)
 
-
-while turn < 4:
-    print("Turn is", turn, "\n")
-    players, tab, deck = action(turn, players, tab, deck)
-
-    tab.print_cards()
-    turn += 1
-    out = False
-
-    while (True):
-        for p in players:
-            if p.bet == highBet:
-                highBet = 0
-
-                for p in players:
-                    p.bet = None
-
-                out = True
-
-                break
-
-            print("\n{}'s turn\n".format(p.name))
-            p.print_cards()
-
-            player_bet, highBet = bet(p, player_bet, highBet)
-
-            try:
-                p.money = p.money - (player_bet - p.bet)
-            except TypeError:
-                p.money = p.money - player_bet
-
-            p.bet = player_bet
-
-            print(Fore.BLUE, "Player", p.name, "has", p.money)
-
-            print(Fore.RED + "\n{}'s bet is {}.".format(p.name, p.bet))
-            print(Style.RESET_ALL)
-
-        if out is True:
-            break
-
-print("Show hands")
-evaluator = Evaluator()
-
-scores = {}
-
-tab.print_cards()
-print()
-
-for p in players:
-    p.print_cards()
-    print()
-    scores[evaluator.evaluate(tab.cards, p.cards)] = p.name
-
-d = OrderedDict(sorted(scores.items(), key=lambda t: t[0]))
-items = list(d.items())
-for i in items:
-    print(i)
-    p_score = i[0]
-    p_class = evaluator.get_rank_class(p_score)
-    print(evaluator.class_to_string(p_class))
+print('\n', "Game Over!", players[0].name, "Has Won!")

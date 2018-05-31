@@ -20,7 +20,7 @@ class Table(object):
         self.bet = 0
         self.turn = -1
         self.cards = []
-        self.money = 0
+        self.pot = 0
 
     def print_cards(self):
         print("\nTable has")
