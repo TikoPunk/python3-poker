@@ -5,21 +5,22 @@ class Player(object):
     def __init__(self, newName, newMoney):
         self.name = newName
         self.money = newMoney
-        self.bet = 0
+        self.bet = None
         self.In = True
         self.dead = False
         self.cards = []
 
     def print_cards(self):
-        print("\n", self.name, "has", len(self.cards), "cards\n")
+        print(self.name, "has", len(self.cards), "cards")
         Card.print_pretty_cards(self.cards)
 
 
 class Table(object):
     def __init__(self):
         self.bet = 0
+        self.turn = -1
         self.cards = []
-        self.money = 0
+        self.pot = 0
 
     def print_cards(self):
         print("\nTable has")
