@@ -11,5 +11,6 @@ python3 main.py
  - ~~Compare hands~~
  - ~~Add bet to winning player~~
  - ~~Get rid of players who have no money left~~
+ - Add blinds to bets
  - Add side pots
  - GUI
