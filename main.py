@@ -7,6 +7,7 @@ from treys import Deck
 from treys import Evaluator
 from collections import OrderedDict
 from pprint import pprint
+import random
 
 
 def clear_screen():
@@ -96,6 +97,7 @@ def game(players):
 
         tab.print_cards()
         print("Table has", tab.pot)
+        print("The Dealer is", players[0].name)
         turn += 1
         out = False
 
@@ -111,7 +113,9 @@ def game(players):
                     out = True
                     break
 
-                print("\n{}'s turn\n".format(p.name))
+                for i in range(25):
+                    print("-", end='')
+                print("\n", "\n{}'s turn\n".format(p.name))
                 p.print_cards()
 
                 player_bet, highBet = bet(p, player_bet, highBet)
@@ -131,6 +135,7 @@ def game(players):
                 print(Style.RESET_ALL)
 
             if out is True:
+                players = players[1:] + players[:1]
                 break
 
     print("Show hands")
@@ -145,6 +150,7 @@ def game(players):
         p.print_cards()
         print()
         scores[evaluator.evaluate(tab.cards, p.cards)] = p
+        p.cards = []
 
     d = OrderedDict(sorted(scores.items(), key=lambda t: t[0]))
     items = list(d.items())
@@ -172,7 +178,6 @@ def game(players):
 
     return [x for x in players if x.money > 0]
 
-
     # Main start
 print("\nTexas Hold em\n\n")
 
@@ -184,7 +189,11 @@ num = check_num_input("How many players? Can only be 6 or less:")
 
 for i in range(num):
     players.append(Player(input("What is your name?:"), starting_money))
+    if len(players) > 1:
+        players[i - 1].left_player = players[i]
+
     print("Welcome", players[i].name, "\n")
+
 
 big_blind = 400
 small_blind = big_blind // 2
@@ -192,6 +201,11 @@ small_blind = big_blind // 2
 # Main Game
 print("Players are starting off at", starting_money)
 print("With", big_blind, "big blinds and", small_blind, "small blinds")
+rando = random.randrange(1, num)
+
+print("Player", players[rando].name, "is dealing first")
+players = players[rando:] + players[:rando]
+
 
 colorama.init()
 

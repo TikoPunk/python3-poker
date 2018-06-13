@@ -7,6 +7,7 @@ class Player(object):
         self.money = newMoney
         self.bet = None
         self.In = True
+        self.left_player = None
         self.dead = False
         self.cards = []
 
